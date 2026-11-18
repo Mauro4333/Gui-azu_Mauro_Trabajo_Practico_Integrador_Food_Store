@@ -89,22 +89,22 @@ class UsuarioServicio:
         raise EntidadNoEncontradaError("Usuario inexistente")
 
     def crear(self, nombre: str, apellido: str, mail: str, celular: str,
-              contrasenia: str, rol: Rol) -> Usuario:
+              contraseña: str, rol: Rol) -> Usuario:
         if any(u.mail == mail.strip().lower() for u in self._usuarios):
             raise DuplicadoError("El mail ya esta registrado")
-        usuario = Usuario(nombre, apellido, mail, celular, contrasenia, rol)
+        usuario = Usuario(nombre, apellido, mail, celular, contraseña, rol)
         self._usuarios.append(usuario)
         return usuario
 
-    def autenticar(self, mail: str, contrasenia: str) -> Usuario:
+    def autenticar(self, mail: str, contraseña: str) -> Usuario:
         for usuario in self._usuarios:
             if (usuario.mail == mail.strip().lower() and not usuario.eliminado
-                    and usuario.verificar_contrasenia(contrasenia)):
+                    and usuario.verificar_contraseña(contraseña)):
                 return usuario
         raise CredencialesInvalidasError("Mail o contraseña incorrectos")
 
     def editar(self, id_usuario: int, nombre: str, apellido: str, mail: str,
-               celular: str, contrasenia: str = "") -> None:
+               celular: str, contraseña: str = "") -> None:
         usuario = self.buscar(id_usuario)
         if any(u.id != id_usuario and u.mail == mail.strip().lower() and not u.eliminado
                for u in self._usuarios):
@@ -113,8 +113,8 @@ class UsuarioServicio:
         usuario.apellido = apellido
         usuario.mail = mail
         usuario.celular = celular
-        if contrasenia:
-            usuario.cambiar_contrasenia(contrasenia)
+        if contraseña:
+            usuario.cambiar_contraseña(contraseña)
 
     def eliminar(self, id_usuario: int, sesion: Usuario) -> None:
         usuario = self.buscar(id_usuario)
